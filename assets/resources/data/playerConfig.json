@@ -1,0 +1,42 @@
+[
+  {
+    "key": "hp",
+    "value": 100
+  },
+  {
+    "key": "maxHp",
+    "value": 100
+  },
+  {
+    "key": "armor",
+    "value": 0
+  },
+  {
+    "key": "freeRerollsPerTurn",
+    "value": 1
+  },
+  {
+    "key": "globalRerolls",
+    "value": 0
+  },
+  {
+    "key": "playsPerTurn",
+    "value": 1
+  },
+  {
+    "key": "souls",
+    "value": 0
+  },
+  {
+    "key": "relicSlots",
+    "value": 5
+  },
+  {
+    "key": "drawCount",
+    "value": 3
+  },
+  {
+    "key": "maxDrawCount",
+    "value": 6
+  }
+]

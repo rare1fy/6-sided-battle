@@ -1,0 +1,360 @@
+﻿// ============================================================
+// 骰子元素与稀有度
+// ============================================================
+
+export type DiceElement = 'normal' | 'fire' | 'ice' | 'thunder' | 'poison' | 'holy' | 'shadow' | 'wind';
+export type DiceRarity = 'common' | 'uncommon' | 'rare' | 'legendary' | 'curse' | 'rune';
+
+// ============================================================
+// 控制效果类型（v0.5 新增）
+// ============================================================
+
+export type ControlType = 'taunt' | 'stun' | 'knockback' | 'polymorph' | 'blind' | 'disarm';
+
+// ============================================================
+// 符文骰子效果类型（v0.5 新增）
+// ============================================================
+
+export type HoldEffectTrigger =
+  | 'onTurnStart'
+  | 'onPlay'
+  | 'onHit'
+  | 'onCondition'
+  | 'on_self_damage'       // 战士：主动自伤后
+  | 'on_basic_attack'      // 战士：普通攻击后
+  | 'on_enemy_hit'         // 战士：受敌人攻击后
+  | 'on_chant_end'         // 法师：吟唱回合结束时
+  | 'on_turn_start'        // 法师：回合开始时
+  | 'on_control_success'   // 法师：控制成功后
+  | 'on_draw_end'          // 盗贼：抽牌阶段结束后
+  | 'on_play';             // 盗贼：每次出牌后
+
+export interface HoldEffect {
+  trigger: HoldEffectTrigger;
+  description?: string;
+  // 战士符文
+  damageToBloodChainTargets?: number;  // 血祭：对血锁目标造成N点伤害
+  nextScarMult?: number;               // 战意：下次伤痕放大器倍率
+  armorGainPercent?: number;           // 铁壁：受击后获得护甲=伤害×N%
+  // 法师符文
+  boostLowestDie?: number;             // 星界共鸣：给最低点数骰子+N基础伤害
+  collapseMultOverride?: number;       // 元素棱镜：坍缩加成覆盖值
+  healOnSuccess?: number;              // 封印：控制成功后回复NHP
+  // 盗贼符文
+  transformLowestToShadow?: boolean;   // 暗影仪式：自动变形最低点数骰子
+  comboBonusPerPlay?: number;          // 连击印记：每次出牌后连击加成+N%
+  autoPoison?: number;                 // 剧毒之心：每次出牌后自动叠N层毒
+}
+
+export interface CastEffect {
+  description?: string;
+  // 战士符文
+  consumeAllScar?: boolean;            // 血祭：消耗全部伤痕
+  trueDamagePerScar?: number;          // 血祭：每层伤痕造成N点真实伤害
+  nextBasicAttackPointsDouble?: boolean; // 战意：下次普攻点数翻倍
+  consumeAllArmor?: boolean;           // 铁壁：消耗全部护甲
+  aoeDamagePercentOfArmor?: number;    // 铁壁：AOE伤害=护甲×N%
+  aoeControlType?: string;             // 铁壁：AOE控制类型
+  // 法师符文
+  chantTurnsBonus?: number;            // 星界共鸣：吟唱回合数+N
+  barrierPerChantTurn?: number;        // 星界共鸣：屏障=吟唱回合×N
+  elementDoubleThisTurn?: boolean;     // 元素棱镜：本回合元素效果×2
+  controlType?: string;                // 封印：施加控制类型
+  controlDuration?: number;            // 封印：控制持续回合
+  secondaryControl?: string;           // 封印：第二个控制类型
+  weakenReduction?: number;            // 封印：虚弱减伤比例
+  // 盗贼符文
+  transformAllToShadow?: boolean;      // 暗影仪式：全部变残骰
+  comboMultiplierDouble?: boolean;     // 连击印记：连击加成翻倍
+  detonateAllPoison?: boolean;         // 剧毒之心：引爆100%毒层
+  damagePerPoisonLayer?: number;       // 剧毒之心：每层毒N点基础伤害
+}
+
+
+// ============================================================
+// 骰子定义 (模板)
+// ============================================================
+
+export interface DiceDef {
+  id: string;
+  name: string;
+  element: DiceElement;
+  faces: number[];
+  description: string;
+  rarity: DiceRarity;
+  route?: string;          // v0.5: 构筑路线标记（A/B/C/AB/AC/BC等）
+  isElemental?: boolean;   // 元素骰子：抽到时随机坍缩
+  isCursed?: boolean;      // 诅咒骰子：重Roll代价翻倍
+  isCracked?: boolean;     // 碎裂骰子：回合结束自毁
+  isRune?: boolean;        // 符文骰子：无面值，持有+打出双效果（v0.5）
+  holdEffect?: HoldEffect; // 符文骰子持有效果（v0.5）
+  castEffect?: CastEffect; // 符文骰子打出效果（v0.5）
+  onPlay?: {
+    bonusDamage?: number;
+    bonusMult?: number;
+    selfMultBeforeSum?: number; // v0.5: 仅放大自身点数（amplify 新机制）
+    heal?: number;
+    pierce?: number;
+    selfDamage?: number;     // 反噬伤害（固定值）
+    selfDamagePercent?: number; // 反噬伤害（最大HP百分比）
+    statusToEnemy?: StatusEffect;
+    statusToSelf?: StatusEffect;
+    aoe?: boolean;
+    controlType?: ControlType; // v0.5: 施加控制效果
+    controlAoe?: boolean;      // v0.5: 控制是否AOE
+    armor?: number;          // 获得固定护甲
+    // 战士特殊
+    armorFromTotalPoints?: boolean; // 护甲=选中骰子总点数
+    armorMultFromTotalPoints?: number; // 护甲=选中骰子总点数×N（向上取整）
+    armorBreak?: boolean;        // 摧毁敌人全部护甲
+    // v0.5 战士新增 onPlay 字段
+    bonusDamageOnNormalAttack?: number;
+    scarBonusDamagePerLayer?: number;
+    multPerHitTaken?: number;
+    vulnerableOnHits?: number;
+    multIfHitLastTurn?: number;
+    scaleWithLostHpCap?: number;
+    bloodChain?: boolean;
+    healMultFromValue?: number;
+    fullHpArmorMult?: number;
+    fullHpBonusMult?: number;
+    normalAttackOnly?: boolean;
+    bonusDamageFromTotalPoints?: boolean;
+    executeHealPercent?: number;
+    executeHealPercentBoosted?: number;
+    executeDrawBonus?: number;
+    consumeScarPercent?: number;
+    permanentFaceBonus?: number;
+    permanentFaceBonusCap?: number;
+    soloSeal?: boolean;
+    soloSealDamageMult?: number;
+    armorMultBoosted?: number;
+    scarThresholdForBoost?: number;
+    aoeDamageBoosted?: number;
+    selfPointBonus?: number;
+    vulnerableToRandom?: number;
+    scatterBonusMult?: number;
+    scatterBonusCap?: number;
+    berserkDuration?: number;
+    berserkDamageMult?: number;
+    berserkTakenMult?: number;
+    berserkBloodCostReduction?: number;
+    selfDamageMultPer1Pct?: number;
+    selfDamageMultCap?: number;
+    scarMultPerLayer?: number;
+    scarOrSoloBonus?: number;
+    totalMultCap?: number;
+    trueDamage?: number;
+    guaranteedHpPercent?: number;
+    repeatSelfDamagePercent?: number;
+    repeatTrueDamage?: number;
+    repeatGuaranteedHpPercent?: number;
+    damagePerCleanse?: number;
+    // v0.5 法师新增 onPlay 字段
+    elementPool?: string[];            // 元素池（替代固定 ice）
+    fateDie?: boolean;                 // 命运骰：不进弃骰库
+    fateDieHealRange?: number[];       // 命运骰回复区间 [min, max]
+    fateDieDamageRange?: number[];     // 命运骰伤害区间 [min, max]
+    fateDieDamageMult?: number;        // 命运骰伤害倍率
+    manaCounter?: boolean;             // 法力反制标记
+    burnEchoMultPerLayer?: number;     // 自燃共鸣：每层灼烧追伤
+    burnEchoClearAll?: boolean;        // 自燃共鸣：清空灼烧
+    // v0.5 盗贼新增 onPlay 字段
+    recoverFromDiscard?: number;       // 从弃骰库回收骰子数
+    fallbackShadowDie?: boolean;       // 弃骰库为空时改为补残骰
+    consumeShadowDie?: number;         // 消耗N颗暗影残骰
+    consumeShadowDieMult?: number;     // 消耗残骰后伤害倍率
+    consumeShadowDieDamageMult?: number; // 消耗残骰追加伤害倍率
+    consumeAllShadowDice?: boolean;    // 消耗所有暗影残骰
+    consumeThresholdForControl?: number; // 消耗N颗以上触发控制
+    comboControlType?: string;         // 连击时触发的控制类型
+    comboScaleMultPerCombo?: number;   // 每层连击伤害加成
+    firstPlayRecoverDiscard?: number;  // 第1次出牌回收弃骰库
+    comboGrantExtraPlay?: boolean;     // 连击时给额外出牌机会
+    comboGrantShadowDie?: boolean;     // 连击时补残骰
+    shadowCorrosion?: boolean;         // 暗影侵蚀（牌库全变残骰）
+    scaleWithHits?: boolean;     // 每受伤一次伤害+2
+    firstPlayOnly?: boolean;     // 仅首次出牌生效
+    scaleWithLostHp?: number;    // 伤害加成=已损失HP×N
+    executeThreshold?: number;   // 斩杀线（敌人HP百分比）
+    executeMult?: number;        // 斩杀倍率
+    aoeDamage?: number;          // 独立AOE伤害
+    healFromValue?: boolean;     // 回血=骰子点数
+    lowHpOverrideValue?: number; // 低血时点数变为N
+    lowHpThreshold?: number;     // 低血判定线
+    bonusDamageFromPoints?: number; // 额外伤害=总点数×N
+    requiresTriple?: boolean;    // 需要三条以上牌型
+    scaleWithBloodRerolls?: boolean; // 卖血次数+1面值
+    selfBerserk?: boolean;       // 自身施加狂暴
+    scaleWithSelfDamage?: boolean;   // 自伤量转伤害
+    damageFromArmor?: number;    // 伤害加成=护甲×N
+    maxHpBonus?: number;         // 最大HP+N
+    purifyAll?: boolean;         // 净化全部负面
+    tauntAll?: boolean;          // 嘲讽全体
+    // 法师特殊
+    reverseValue?: boolean;      // 点数变为7-当前值
+    randomTarget?: boolean;      // 随机目标
+    removeBurn?: number;         // 清除灼烧层数
+    healOnSkip?: number;         // 未出牌回复HP
+    bonusDamagePerElement?: number; // 每颗元素骰子+N伤害
+    copyHighestValue?: boolean;  // 复制最高点数
+    bonusOnKeep?: number;        // 保留到下回合时+N点
+    rerollOnKeep?: boolean;      // 保留时自动重投
+    dualElement?: boolean;       // 双元素
+    copyMajorityElement?: boolean; // 复制多数元素
+    devourDie?: boolean;         // 吞噬骰子
+    healPerCleanse?: number;     // 每净化1种回复N HP
+    bonusMultOnKeep?: number;    // 保留时+N倍率
+    unifyElement?: boolean;      // 统一元素
+    overrideValue?: number;      // 固定点数
+    swapWithUnselected?: boolean; // 与未选中骰子交换
+    freezeBonus?: number;        // 冻结+N回合
+    bonusPerTurnKept?: number;   // 每保留1回合+N点
+    keepBonusCap?: number;       // 保留加成上限
+    armorFromHandSize?: number;  // 护甲=手牌数×N
+    requiresCharge?: number;     // 需要吟唱N回合
+    bonusMultPerExtraCharge?: number; // 每多1层吟唱额外+N倍率（禁咒·陨星）
+    chainBlast?: boolean;        // 废弃，改用chainBolt
+    chainBolt?: boolean;         // 奥术飞弹：对每个存活敌人各造成一次等于自身点数的独立伤害
+    maxHpBonusEvery?: number;    // 生命熔炉：每N次出牌+maxHP
+    splashToRandom?: boolean;    // 对场上随机另一敌人造成同等点数伤害
+    aoeDamagePercent?: number;   // 对全体敌人造成点数×比例的AOE伤害（旋风斩）
+    splinterDamage?: number;     // 溢出伤害×比例传导给随机其他敌人
+    comboSplashDamage?: number;   // 连锁打击：第2次及以上连击时对随机另一敌人造成骰子点数×倍率的独立伤害
+    triggerAllElements?: boolean; // 触发全部元素
+    // 盗贼特殊
+    comboBonus?: number;         // 连击倍率加成
+    poisonInverse?: boolean;     // 毒=7-点数
+    stayInHand?: boolean;        // 出牌后不消耗
+    grantTempDie?: boolean;      // 补充临时骰子
+    drawFromBag?: number;        // 从骰子库补抽N颗正式骰子
+    comboDrawBonusNextTurn?: boolean; // 连击成功后下回合手牌+1
+    grantPlayOnCombo?: boolean;      // 连击时+1出牌机会
+    cloneSelf?: boolean;             // 影分身：复制自身点数额外加伤
+    critOnSecondPlay?: number;   // 第2次出牌暴击倍率
+    poisonBase?: number;         // 基础毒层
+    poisonBonusIfPoisoned?: number; // 已有毒额外+N
+    alwaysBounce?: boolean;      // 必定弹回
+    bonusDamageOnSecondPlay?: number; // 第2次出牌+N伤害
+    stealArmor?: number;         // 偷取护甲
+    poisonFromPoisonDice?: number; // 毒层=毒系骰子数×N
+    bonusMultOnSecondPlay?: number; // 第2次出牌倍率
+    grantExtraPlay?: boolean;    // 额外出牌机会
+    detonatePoisonPercent?: number; // 引爆毒层百分比
+    detonateExtraPerPlay?: number; // 每额外出牌多引爆N%毒层
+    wildcard?: boolean;          // 万能骰子
+    transferDebuff?: boolean;    // 转移负面状态
+    detonateAllOnLastPlay?: boolean; // 最后出牌引爆全部
+    escalateDamage?: number;     // 递增伤害百分比
+    grantTempDieFixed?: number[]; // 补充固定面值分布的临时骰子（每颗触发1次）
+    multOnThirdPlay?: number;    // 第3次及以上出牌伤害倍率
+    bounceAndGrow?: boolean;     // 弹回手牌且每次出牌点数+1（上限+3）
+    shadowClonePlay?: boolean;   // 影分身：自动触发一次50%伤害的额外出牌
+    boomerangPlay?: boolean;     // 回旋：首次出牌弹回+下次出牌不消耗出牌次数
+    doublePoisonOnCombo?: boolean; // 连击时目标毒层翻倍
+    grantShadowRemnant?: boolean;   // 补充1颗临时暗影残骰（当回合可用，回合结束销毁）
+    grantPersistentShadowRemnant?: boolean; // 连击时补充1颗持久暗影残骰（跨回合保留）
+    grantExtraPlayOnCombo?: boolean; // 连击时补充1次出牌机会
+    // v3新增 — 战士
+    healOrMaxHp?: boolean;           // 生命熔炉：未满血回点数HP，满血+3最大HP（上限+20）
+    executeHeal?: number;            // 斩杀回血
+    purifyOne?: boolean;             // 净化1层负面
+    // v3新增 — 法师
+    damageShield?: boolean;          // 免伤护盾=点数×2（非护甲，不被毒绕过）
+    purifyOneOnSkip?: boolean;       // 吟唱回合净化1层
+    multPerElement?: number;         // 每颗元素骰子+N%最终伤害倍率
+    ignoreForHandType?: boolean;     // 不参与牌型判定（镜像）
+    boostLowestOnKeep?: number;      // 保留时手牌最低点骰子+N
+    lockElement?: boolean;           // 锁定元素坍缩到下回合
+    multiElementBlast?: boolean;     // 元素风暴：每颗选中骰子各触发随机元素
+    burnEcho?: boolean;              // 灼烧共鸣：目标灼烧层×5伤害+延长1回合
+    frostEchoDamage?: number;        // 冰封余韵：目标上回合曾冻结时+N%伤害
+    armorToDamage?: boolean;         // 反转护甲为伤害
+    // v3新增 — 盗贼
+    grantShadowDie?: boolean;        // 补充1颗暗影残骰
+    comboPersistShadow?: boolean;    // 连击时暗影残骰变持久型
+    comboGrantPlay?: boolean;        // 连击时+1出牌机会
+    poisonFromValue?: boolean;       // 施加毒=点数
+    poisonScaleDamage?: number;      // 额外伤害=目标毒层×N
+    comboDetonatePoison?: number;    // 连击时引爆N%毒层
+    comboScaleDamage?: number;       // 伤害+连击次数×N%
+    phantomFromShadowDice?: boolean; // 点数=手牌暗影残骰数×2
+    comboHeal?: number;              // 连击时回复N HP
+    grantPlayOnThird?: boolean;      // 第3次出牌时+1出牌机会
+    // 通用
+    purifyDebuff?: number | boolean; // 净化负面（遗物兼容）
+  };
+}
+
+// ============================================================
+// 骰子实例 (运行时)
+// ============================================================
+
+// ============================================================
+// 拥有的骰子（带等级）
+// ============================================================
+
+export interface OwnedDie {
+  defId: string;    // 骰子定义ID
+  level: number;    // 当前等级 1-3
+}
+
+export interface Die {
+  id: number;
+  diceDefId: string;
+  value: number;
+  element: DiceElement;
+  collapsedElement?: DiceElement;  // 元素骰子坍缩后的实际元素
+  secondElement?: DiceElement;     // 棱镜骰子第二元素
+  keptBonusAccum?: number;         // 星辰骰子：已累积的保留加成
+  justAdded?: boolean;             // 刚加入手牌（入场动画用）
+  isBonusDraw?: boolean;           // 技能补抽的骰子（不占手牌上限）
+  selected: boolean;
+  spent: boolean;
+  rolling?: boolean;
+  playing?: boolean;
+  kept?: boolean;
+  isTemp?: boolean;   // 盗贼临时补充的骰子（保留到下回合）
+  isShadowRemnant?: boolean;  // 暗影残骰标记
+  shadowRemnantPersistent?: boolean; // 持久暗影残骰（连击奖励，跨回合保留1次）
+  shadowRemnantSurvived?: boolean;   // 已存活1回合，下回合结束销毁
+  bounceGrowCount?: number;  // 飞刀骰子弹回次数（上限3）
+  boomerangUsed?: boolean;   // 回旋骰子本回合已弹回过
+}
+
+// ============================================================
+// 牌型
+// ============================================================
+
+export type HandType = '普通攻击' | '对子' | '连对' | '三连对' | '三条' | '顺子' | '4顺' | '5顺' | '6顺' | '葫芦' | '大葫芦' | '四条' | '五条' | '六条' | '无效牌型';
+
+// ============================================================
+// 状态效果
+// ============================================================
+
+export type StatusType = 'poison' | 'burn' | 'dodge' | 'vulnerable' | 'strength' | 'weak' | 'armor' | 'freeze' | 'stun' | 'silence';
+
+export interface StatusEffect {
+  type: StatusType;
+  value: number;
+  duration?: number;
+}
+
+// ============================================================
+// 骰子运行时实例（手牌中的骰子，含临时状态）
+// ============================================================
+
+export interface DiceInstance {
+  def: DiceDef;                    // 骰子模板定义
+  currentFace: number;             // 当前面值（roll 后的点数）
+  instanceId: string;              // 唯一实例 ID（区分同模板多颗）
+  // v0.5 盗贼残骰系统
+  originalDiceId?: string;         // 变形残骰记录原骰子 ID（恢复用）
+  preserveNextTurn?: boolean;      // 连击心得：本颗残骰保留到下回合
+  // v0.5 法师吟唱系统
+  baseDamageBonus?: number;        // 星界共鸣持有效果累加的基础伤害
+  keepBonusAccumulated?: number;   // 星辰骰子吟唱累加的点数
+  // v0.5 通用
+  lockedThisTurn?: boolean;        // 赌徒信条：重投失败后锁定
+  usedThisTurn?: boolean;          // 飞刀/回旋刃：本回合已使用
+}

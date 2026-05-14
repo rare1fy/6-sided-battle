@@ -1,0 +1,80 @@
+[
+  {
+    "id": "warrior",
+    "name": "嗜血狂战",
+    "title": "铁血征服者",
+    "description": "以血换伤，一击致命。嗜血越多，越凶。",
+    "color": "#c04040",
+    "colorLight": "#ff6060",
+    "colorDark": "#601010",
+    "drawCount": 3,
+    "maxPlays": 1,
+    "freeRerolls": 1,
+    "canBloodReroll": true,
+    "keepUnplayed": false,
+    "hp": 120,
+    "maxHp": 120,
+    "initialDice": [
+      "standard",
+      "standard",
+      "standard",
+      "standard",
+      "w_bloodthirst",
+      "w_fury"
+    ],
+    "passiveDesc": "【嗜血战意】战斗本能多颗散打；搏命 HP×2^n% 重投；伤痕：自伤+层，普攻追加基础伤害=当前层数",
+    "normalAttackMultiSelect": true
+  },
+  {
+    "id": "mage",
+    "name": "星界魔导",
+    "title": "星界禁咒师",
+    "description": "耐心吟唱2-3回合，攒齐完美手牌一波超载。",
+    "color": "#7040c0",
+    "colorLight": "#a070ff",
+    "colorDark": "#301060",
+    "drawCount": 4,
+    "maxPlays": 2,
+    "freeRerolls": 0,
+    "canBloodReroll": false,
+    "keepUnplayed": true,
+    "hp": 80,
+    "maxHp": 80,
+    "initialDice": [
+      "standard",
+      "standard",
+      "standard",
+      "standard",
+      "m_arcane",
+      "m_focus"
+    ],
+    "passiveDesc": "【星界超载】保留未出牌骰子；每回合抽4出2；蓄力越久倍率越高",
+    "normalAttackMultiSelect": false
+  },
+  {
+    "id": "rogue",
+    "name": "影锋刺客",
+    "title": "暗影行者",
+    "description": "快攻连击，偷取资源，以速度碾压。",
+    "color": "#40a040",
+    "colorLight": "#60ff60",
+    "colorDark": "#104010",
+    "drawCount": 5,
+    "maxPlays": 3,
+    "freeRerolls": 2,
+    "canBloodReroll": false,
+    "keepUnplayed": false,
+    "hp": 90,
+    "maxHp": 90,
+    "initialDice": [
+      "standard",
+      "standard",
+      "standard",
+      "standard",
+      "r_shadow",
+      "r_swift"
+    ],
+    "passiveDesc": "【影锋连击】每回合抽5出3；2次免费重投；连击越多伤害越高",
+    "normalAttackMultiSelect": false
+  }
+]

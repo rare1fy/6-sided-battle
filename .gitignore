@@ -1,0 +1,51 @@
+# ========================
+# Cocos Creator 3.x
+# ========================
+
+# 编辑器缓存（巨大，必须忽略）
+/library/
+/temp/
+/local/
+/build/
+/profiles/
+
+# ========================
+# Node.js
+# ========================
+node_modules/
+package-lock.json
+
+# ========================
+# Extensions
+# ========================
+# cocos-mcp-server 是第三方插件（自带 .git），不入库
+extensions/cocos-mcp-server/
+# 其他自研扩展：保留源码，忽略编译产物和依赖
+extensions/*/node_modules/
+extensions/*/dist/
+
+# ========================
+# OS 生成文件
+# ========================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ========================
+# IDE / 编辑器
+# ========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ========================
+# 数据管线生成产物（由 Excel 生成，不入库）
+# ========================
+assets/resources/data/json/
+
+# ========================
+# 构建产物
+# ========================
+/native/

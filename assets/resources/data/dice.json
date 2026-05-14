@@ -1,0 +1,165 @@
+[
+  {
+    "id": "standard",
+    "name": "普通骰子",
+    "element": "normal",
+    "faces": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "description": "标准六面骰，点数1到6均匀分布",
+    "rarity": "common",
+    "isElemental": false
+  },
+  {
+    "id": "heavy",
+    "name": "灌铅骰子",
+    "element": "normal",
+    "faces": [
+      4,
+      4,
+      5,
+      5,
+      6,
+      6
+    ],
+    "description": "只会掷出4、5、6，稳定的高点数骰子",
+    "rarity": "uncommon",
+    "isElemental": false
+  },
+  {
+    "id": "elemental",
+    "name": "元素骰子",
+    "element": "normal",
+    "faces": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "description": "每回合随机变为火/冰/雷/毒/圣元素之一",
+    "rarity": "rare",
+    "isElemental": true
+  },
+  {
+    "id": "blade",
+    "name": "锋刃骰子",
+    "element": "normal",
+    "faces": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "description": "+20基础伤害",
+    "rarity": "rare",
+    "isElemental": false
+  },
+  {
+    "id": "multiplier",
+    "name": "倍增骰子",
+    "element": "normal",
+    "faces": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "description": "+50%倍率",
+    "rarity": "rare",
+    "isElemental": false
+  },
+  {
+    "id": "joker",
+    "name": "小丑骰子",
+    "element": "normal",
+    "faces": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "description": "1-9随机",
+    "rarity": "rare",
+    "isElemental": false
+  },
+  {
+    "id": "chaos",
+    "name": "混沌骰子",
+    "element": "normal",
+    "faces": [
+      1,
+      1,
+      1,
+      6,
+      6,
+      6
+    ],
+    "description": "只能掷出1和6，极端分布",
+    "rarity": "uncommon",
+    "isElemental": false
+  },
+  {
+    "id": "split",
+    "name": "分裂骰子",
+    "element": "normal",
+    "faces": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "description": "出牌时复制自身加入结算",
+    "rarity": "epic",
+    "isElemental": false
+  },
+  {
+    "id": "cursed",
+    "name": "诅咒骰子",
+    "element": "normal",
+    "faces": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "description": "0点，重Roll代价翻倍",
+    "rarity": "cursed",
+    "isElemental": false
+  },
+  {
+    "id": "cracked",
+    "name": "碎裂骰子",
+    "element": "normal",
+    "faces": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      2
+    ],
+    "description": "固定1-2点，反噬伤害",
+    "rarity": "cursed",
+    "isElemental": false
+  }
+]

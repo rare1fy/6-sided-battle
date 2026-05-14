@@ -1,0 +1,18 @@
+{
+  "name": "dice-hero-data-tools",
+  "version": "1.0.0",
+  "description": "Excel → JSON 数据转换工具",
+  "scripts": {
+    "gen-data": "npx tsx tools/excel2json.ts",
+    "gen-data:watch": "npx tsx --watch tools/excel2json.ts"
+  },
+  "devDependencies": {
+    "xlsx": "^0.18.5",
+    "tsx": "^4.7.0",
+    "typescript": "^5.4.0"
+  },
+  "creator": {
+    "version": "3.8.8"
+  },
+  "uuid": "b75c0ac0-169f-403e-b3e1-bfbda53544c1"
+}

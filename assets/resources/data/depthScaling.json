@@ -1,0 +1,72 @@
+[
+  {
+    "depth": 1,
+    "hpMult": 1.1,
+    "dmgMult": 0.5
+  },
+  {
+    "depth": 2,
+    "hpMult": 1.25,
+    "dmgMult": 0.6
+  },
+  {
+    "depth": 3,
+    "hpMult": 1.5,
+    "dmgMult": 0.75
+  },
+  {
+    "depth": 4,
+    "hpMult": 1.2,
+    "dmgMult": 0.65
+  },
+  {
+    "depth": 5,
+    "hpMult": 1.4,
+    "dmgMult": 0.8
+  },
+  {
+    "depth": 6,
+    "hpMult": 1.2,
+    "dmgMult": 0.7
+  },
+  {
+    "depth": 7,
+    "hpMult": 1.8,
+    "dmgMult": 1
+  },
+  {
+    "depth": 8,
+    "hpMult": 1.1,
+    "dmgMult": 0.6
+  },
+  {
+    "depth": 9,
+    "hpMult": 1.4,
+    "dmgMult": 0.8
+  },
+  {
+    "depth": 10,
+    "hpMult": 1.6,
+    "dmgMult": 0.9
+  },
+  {
+    "depth": 11,
+    "hpMult": 1.8,
+    "dmgMult": 1
+  },
+  {
+    "depth": 12,
+    "hpMult": 2,
+    "dmgMult": 1.1
+  },
+  {
+    "depth": 13,
+    "hpMult": 1.3,
+    "dmgMult": 0.8
+  },
+  {
+    "depth": 14,
+    "hpMult": 2.5,
+    "dmgMult": 1.3
+  }
+]

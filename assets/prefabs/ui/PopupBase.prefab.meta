@@ -1,0 +1,14 @@
+{
+  "ver": "2.0.3",
+  "importer": "prefab",
+  "imported": true,
+  "uuid": "8fb32798-46ed-4d33-8775-51736f278f84",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {},
+  "userData": {
+    "syncNodeName": "PopupBase",
+    "hasIcon": false
+  }
+}

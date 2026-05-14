@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "ES2015",
+    "lib": ["ES2015", "DOM"],
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./temp/declarations",
+    "rootDir": "./assets/scripts",
+    "baseUrl": ".",
+    "paths": {
+      "@logic/*": ["assets/scripts/logic/*"],
+      "@data/*": ["assets/scripts/data/*"],
+      "@config/*": ["assets/scripts/config/*"],
+      "@types/*": ["assets/scripts/types/*"],
+      "@engine/*": ["assets/scripts/engine/*"],
+      "@utils/*": ["assets/scripts/utils/*"],
+      "@components/*": ["assets/scripts/components/*"],
+      "@managers/*": ["assets/scripts/managers/*"]
+    }
+  },
+  "include": [
+    "assets/scripts/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "build",
+    "temp"
+  ]
+}
