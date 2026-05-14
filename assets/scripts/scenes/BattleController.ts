@@ -13,6 +13,8 @@ import { ProgressBarView } from '../components/ui/ProgressBarView';
 import { ActionButtonView, ButtonStyle } from '../components/ui/ActionButtonView';
 import { HeaderBarView } from '../components/ui/HeaderBarView';
 import { EventBus, GameEvents } from '../managers/EventBus';
+import { bindController, unbindController, startBattle, playSelectedDice, endPlayerTurn, rerollDice } from '../managers/BattleFlowManager';
+import { getGame } from '../managers/GameStore';
 
 const { ccclass, property } = _decorator;
 
@@ -85,10 +87,13 @@ export class BattleController extends Component {
     // ── 生命周期 ──
 
     protected start(): void {
+        bindController(this);
         this._initBattle();
+        this._bindButtons();
     }
 
     protected onDestroy(): void {
+        unbindController();
         this._enemyViews = [];
         this._diceCardViews = [];
     }
@@ -96,8 +101,32 @@ export class BattleController extends Component {
     // ── 战斗初始化 ──
 
     private _initBattle(): void {
-        this.playerHpBar.setProgress(100, 100);
-        this.playerEnergyBar.setProgress(0, 100);
+        this.playerHpBar?.setProgress(100, 100);
+        this.playerEnergyBar?.setProgress(0, 100);
+    }
+
+    // ── 按钮绑定 ──
+
+    private _bindButtons(): void {
+        if (this.rollButton) {
+            this.rollButton.node.on('click', this._onRollClick, this);
+        }
+        if (this.endTurnButton) {
+            this.endTurnButton.node.on('click', this._onEndTurnClick, this);
+        }
+    }
+
+    private _onRollClick(): void {
+        rerollDice();
+    }
+
+    private _onEndTurnClick(): void {
+        endPlayerTurn();
+    }
+
+    /** 外部调用：出牌（由 UI 按钮触发） */
+    public playDice(): void {
+        playSelectedDice(this._selectedDiceIds);
     }
 
     // ── 相机震屏 ──
@@ -191,4 +220,4 @@ export class BattleController extends Component {
         EventBus.emit(GameEvents.BATTLE_END, { result: 'lose' });
         this.scheduleOnce(() => { director.loadScene('Settlement'); }, 1.0);
     }
-}
+}
