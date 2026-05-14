@@ -82,6 +82,60 @@ export class ClassSelectController extends Component {
 
     public onConfirm(): void {
         if (!this._selectedClassId) return;
+
+        const classDef = CLASS_LIST.find(c => c.id === this._selectedClassId);
+        if (!classDef) return;
+
+        // 初始化 GameState 并存到 GameManager
+        const initialState: Partial<import('../types/game').GameState> = {
+            hp: classDef.hp,
+            maxHp: classDef.hp,
+            armor: 0,
+            chantShield: 0,
+            playerClass: this._selectedClassId,
+            drawCount: classDef.drawCount,
+            maxPlays: classDef.maxPlays,
+            freeRerollsPerTurn: classDef.freeRerolls,
+            freeRerollsLeft: classDef.freeRerolls,
+            playsLeft: classDef.maxPlays,
+            globalRerolls: 0,
+            souls: 0,
+            slots: 5,
+            ownedDice: classDef.startingDice ?? [],
+            diceBag: [],
+            discardPile: [],
+            handLevels: {},
+            relics: [],
+            elementsUsedThisBattle: [],
+            currentNodeId: null,
+            map: [],
+            phase: 'battle',
+            battleTurn: 1,
+            isEnemyTurn: false,
+            targetEnemyUid: null,
+            battleWaves: [],
+            currentWaveIndex: 0,
+            logs: [],
+            shopItems: [],
+            merchantItems: [],
+            shopLevel: 1,
+            statuses: [],
+            lootItems: [],
+            enemyHpMultiplier: 1,
+            chapter: 1,
+            stats: { totalDamageDealt: 0, maxSingleHit: 0, totalPlays: 0, totalRerolls: 0, totalDamageTaken: 0, totalHealing: 0, totalArmorGained: 0, battlesWon: 0, elitesWon: 0, bossesWon: 0, enemiesKilled: 0, handTypeCounts: {}, bestHandPlayed: '', diceUsageCounts: {}, goldEarned: 0, goldSpent: 0 },
+            blackMarketQuota: 0,
+            evacuatedQuota: 0,
+            totalOverkillThisRun: 0,
+            soulCrystalMultiplier: 1,
+            playsPerEnemy: {},
+            level: 1,
+            xp: 0,
+            xpToNext: 100,
+        };
+
+        GameManager.instance.gameState = initialState as import('../types/game').GameState;
+
         EventBus.emit(GameEvents.SCENE_CHANGE, 'BattleScene');
         director.loadScene('Battle');
     }

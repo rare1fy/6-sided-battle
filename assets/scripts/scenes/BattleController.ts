@@ -15,6 +15,8 @@ import { HeaderBarView } from '../components/ui/HeaderBarView';
 import { EventBus, GameEvents } from '../managers/EventBus';
 import { bindController, unbindController, startBattle, playSelectedDice, endPlayerTurn, rerollDice } from '../managers/BattleFlowManager';
 import { getGame } from '../managers/GameStore';
+import { GameManager } from '../managers/GameManager';
+import { getEnemiesForNode } from '../data/enemies';
 
 const { ccclass, property } = _decorator;
 
@@ -103,6 +105,17 @@ export class BattleController extends Component {
     private _initBattle(): void {
         this.playerHpBar?.setProgress(100, 100);
         this.playerEnergyBar?.setProgress(0, 100);
+
+        // 从 GameManager 读取状态并启动战斗
+        const gameState = GameManager.instance?.gameState;
+        if (gameState) {
+            this.playerHpBar?.setProgress(gameState.hp, gameState.maxHp);
+
+            // 生成敌人波次并启动战斗流程
+            const battleNode = { id: 'battle_1', type: 'battle' as const, depth: 0 } as any;
+            const waves = getEnemiesForNode(battleNode, 0, gameState.enemyHpMultiplier, 1.0, gameState.chapter ?? 1);
+            startBattle(gameState, battleNode, waves);
+        }
     }
 
     // ── 按钮绑定 ──
