@@ -10,8 +10,8 @@ interface BundleDef {
 }
 
 const BUNDLES: BundleDef[] = [
-    { name: 'bundle_fonts',    priority: 0, required: true },
-    { name: 'bundle_ui',       priority: 1, required: true },
+    { name: 'bundle_fonts',    priority: 0, required: false },
+    { name: 'bundle_ui',       priority: 1, required: false },
     { name: 'bundle_audio',    priority: 2, required: false },
     { name: 'bundle_chapter1', priority: 2, required: false },
 ];
@@ -36,7 +36,7 @@ export class LoadingController extends Component {
 
     private async _loadAll(): Promise<void> {
         const total = BUNDLES.length;
-        this.progressBar.setProgress(0, total);
+        this.progressBar?.setProgress(0, total);
         this._updateHint('正在加载资源...');
 
         const promises = BUNDLES.map((def) => this._loadOneBundle(def, total));
@@ -52,7 +52,7 @@ export class LoadingController extends Component {
             return;
         }
 
-        this.progressBar.setProgress(total, total);
+        this.progressBar?.setProgress(total, total);
 
         if (this._failedOptional.length > 0) {
             this._updateHint(`加载完成（${this._failedOptional.join(',')} 将延迟加载）`);
@@ -71,7 +71,7 @@ export class LoadingController extends Component {
                     if (!def.required) {
                         this._failedOptional.push(def.name);
                         this._loaded++;
-                        this.progressBar.setProgress(this._loaded, total);
+                        this.progressBar?.setProgress(this._loaded, total);
                         resolve(null!);
                     } else {
                         reject(err);
@@ -79,7 +79,7 @@ export class LoadingController extends Component {
                     return;
                 }
                 this._loaded++;
-                this.progressBar.setProgress(this._loaded, total);
+                this.progressBar?.setProgress(this._loaded, total);
                 this._updateHint(`加载中... ${def.name} (${this._loaded}/${total})`);
                 resolve(bundle);
             });
