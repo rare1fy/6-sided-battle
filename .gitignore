@@ -46,6 +46,12 @@ Desktop.ini
 assets/resources/data/json/
 
 # ========================
+# 微信小游戏密钥（绝对不能入库！）
+# ========================
+private.wx.key
+.upload-version.json
+
+# ========================
 # 构建产物
 # ========================
 /native/

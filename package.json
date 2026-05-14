@@ -4,12 +4,14 @@
   "description": "Excel → JSON 数据转换工具",
   "scripts": {
     "gen-data": "npx tsx tools/excel2json.ts",
-    "gen-data:watch": "npx tsx --watch tools/excel2json.ts"
+    "gen-data:watch": "npx tsx --watch tools/excel2json.ts",
+    "upload": "node scripts/upload-wechat.js"
   },
   "devDependencies": {
-    "xlsx": "^0.18.5",
+    "miniprogram-ci": "^2.1.31",
     "tsx": "^4.7.0",
-    "typescript": "^5.4.0"
+    "typescript": "^5.4.0",
+    "xlsx": "^0.18.5"
   },
   "creator": {
     "version": "3.8.8"

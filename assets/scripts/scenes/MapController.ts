@@ -1,4 +1,7 @@
-import { _decorator, Component, Node, Label, Button, director, ScrollView } from 'cc';
+import { _decorator, Component, Node, Label, Prefab, instantiate, director, ScrollView } from 'cc';
+import { HeaderBarView } from '../components/ui/HeaderBarView';
+import { PlayerInfoView } from '../components/ui/PlayerInfoView';
+import { MapNodeView } from '../components/game/MapNodeView';
 import { EventBus, GameEvents } from '../managers/EventBus';
 
 const { ccclass, property } = _decorator;
@@ -6,14 +9,11 @@ const { ccclass, property } = _decorator;
 @ccclass('MapController')
 export class MapController extends Component {
 
-    @property(Label)
-    hpLabel: Label = null!;
+    @property(HeaderBarView)
+    headerBar: HeaderBarView = null!;
 
-    @property(Label)
-    goldLabel: Label = null!;
-
-    @property(Label)
-    diceCountLabel: Label = null!;
+    @property(PlayerInfoView)
+    playerInfo: PlayerInfoView = null!;
 
     @property(ScrollView)
     scrollView: ScrollView = null!;
@@ -24,26 +24,20 @@ export class MapController extends Component {
     @property(Node)
     pathLayer: Node = null!;
 
-    @property(Button)
-    backButton: Button = null!;
+    @property(Prefab)
+    mapNodePrefab: Prefab = null!;
 
     protected onLoad(): void {
-        this.backButton.node.on(Button.EventType.CLICK, this._onBack, this);
+        this.headerBar.init({
+            title: '第 1 章',
+            showBack: true,
+            onBack: () => director.loadScene('ClassSelect'),
+        });
+        this.playerInfo.refresh({ hp: 100, maxHp: 100, gold: 0, diceCount: 6 });
         this._initMap();
     }
 
-    protected onDestroy(): void {
-        this.backButton.node.off(Button.EventType.CLICK, this._onBack, this);
-    }
-
     private _initMap(): void {
-        // TODO: 从 GameManager 获取地图数据，生成节点
-        this.hpLabel.string = 'HP: 100/100';
-        this.goldLabel.string = '金币: 0';
-        this.diceCountLabel.string = '骰子: 6';
-    }
-
-    private _onBack(): void {
-        director.loadScene('ClassSelect');
+        // TODO: 从 GameManager 获取地图数据，生成 MapNode 预制体实例
     }
 }
